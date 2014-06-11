@@ -5,12 +5,11 @@ require 'fileutils'
 
 def getStopsForRoute(route, direction)
     stops = @old_db.execute <<-eos
-    	SELECT stop_times.stop_id,stop_times.stop_sequence
-		FROM stop_times 
-		INNER JOIN stops  
-		ON stop_times.stop_id=stops.stop_id 
-		WHERE stop_times.trip_id IN (SELECT trip_id FROM trips WHERE route_id = '#{route}' AND direction_id = '#{direction}') 
-		GROUP BY stop_times.stop_id,stop_times.stop_sequence;
+		SELECT stop_times.stop_id, stop_times.stop_sequence, trips.trip_headsign 
+		FROM trips 
+		JOIN stop_times ON trips.trip_id = stop_times.trip_id AND route_id = '#{route}' AND direction_id = '#{direction}' 
+		JOIN stops ON stop_times.stop_id = stops.stop_id 
+		GROUP BY stops.stop_id, stops.stop_name;
     eos
 end
 
@@ -32,10 +31,11 @@ begin
 
 	@new_db.execute <<-eos
 		CREATE TABLE route_stops(
-			route_id CHAR(11) NOT NULL,
-   			direction_id TINYINT(1) NOT NULL,
-   			stop_id CHAR(11) NOT NULL,
-   			stop_sequence INT(11) NOT NULL
+			route_id varchar(11) DEFAULT(NULL),
+   			direction_id tinyint(1) DEFAULT(NULL),
+   			stop_id varchar(11) DEFAULT(NULL),
+   			stop_sequence int(11) DEFAULT(NULL),
+   			trip_headsign varchar(255) DEFAULT(NULL)
 		);
 	eos
 
@@ -43,15 +43,17 @@ begin
 	routes.each do |route|
 		for i in 0..1
 			route_id = route['route_id']
+			puts route_id
 			stops = getStopsForRoute(route_id, i.to_s)
-			
 			stops.each do |stop|
-				@new_db.execute <<-eos
+				insert = @new_db.prepare <<-eos
 					INSERT INTO route_stops 
-						(route_id, direction_id, stop_id, stop_sequence) 
+						(route_id, direction_id, stop_id, stop_sequence, trip_headsign) 
 					VALUES 
-						('#{route_id}', #{i.to_s}, '#{stop['stop_id']}', #{stop['stop_sequence']});
+						('#{route_id}', #{i.to_s}, '#{stop['stop_id']}', #{stop['stop_sequence']}, ?);
 				eos
+				insert.bind_param(1, stop['trip_headsign'])
+				insert.execute
 			end
 		end
 	end
@@ -67,10 +69,9 @@ begin
 
 rescue SQLite3::Exception => e 
     puts "Exception occured"
+    puts e.backtrace
     puts e	 
 ensure
     @old_db.close if @old_db
     @new_db.close if @new_db
 end
-
-# INSERT INTO X.TABLE(Id, Value) SELECT * FROM Y.TABLE;
