@@ -56,13 +56,15 @@ begin
 		end
 	end
 
+	@new_db.execute "CREATE INDEX route_id_direction_id on route_stops (route_id, direction_id);"
+
 	@new_db.execute "DROP TABLE calendar;"
 	@new_db.execute "DROP TABLE fare_attributes;"
 	@new_db.execute "DROP TABLE fare_rules;"
 	@new_db.execute "DROP TABLE stop_times;"
 	@new_db.execute "DROP TABLE trips;"
 	@new_db.execute "VACUUM;"
-	
+
 rescue SQLite3::Exception => e 
     puts "Exception occured"
     puts e	 
