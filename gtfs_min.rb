@@ -17,10 +17,11 @@ def getRoutes
 	routes = @old_db.execute "select route_id from routes;"
 end
 
-begin
+begin	
 	@orig_db_name = "mbta.db"
 	@min_db_name = "mbta_min.db"
 
+	puts "Creating mbta_min.db"
 	FileUtils.cp(@orig_db_name, @min_db_name)
 
 	@old_db = SQLite3::Database.open @orig_db_name
@@ -29,6 +30,7 @@ begin
 	@old_db.results_as_hash = true
 	@new_db.results_as_hash = true
 
+	puts "Creating route_stops table"
 	@new_db.execute <<-eos
 		CREATE TABLE route_stops(
 			route_id varchar(11) DEFAULT(NULL),
@@ -39,6 +41,7 @@ begin
 		);
 	eos
 
+	puts "Adding route_stops"
 	routes = getRoutes
 	routes.each do |route|
 		for i in 0..1
@@ -58,14 +61,16 @@ begin
 		end
 	end
 
+	puts "Creating route_id_direction_id index on route_stops"
 	@new_db.execute "CREATE INDEX route_id_direction_id on route_stops (route_id, direction_id);"
 
-	@new_db.execute "DROP TABLE calendar;"
-	@new_db.execute "DROP TABLE fare_attributes;"
-	@new_db.execute "DROP TABLE fare_rules;"
+	puts "Dropping stop_times table"
 	@new_db.execute "DROP TABLE stop_times;"
+	puts "Dropping trips table"
 	@new_db.execute "DROP TABLE trips;"
+	puts "Vacuuming database"
 	@new_db.execute "VACUUM;"
+	puts "All done!"
 
 rescue SQLite3::Exception => e 
     puts "Exception occured"

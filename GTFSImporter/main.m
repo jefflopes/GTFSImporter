@@ -19,16 +19,16 @@ int main (int argc, const char * argv[])
     [importer addAgency];
     
     
-    NSLog(@"Importing Fare Attributes...");
-    [importer addFareAttributes];
+//    NSLog(@"Importing Fare Attributes...");
+//    [importer addFareAttributes];
     
     
-    NSLog(@"Importing Fare Rules...");
-    [importer addFareRules];
+//    NSLog(@"Importing Fare Rules...");
+//    [importer addFareRules];
     
     
-    NSLog(@"Importing Calendar...");
-    [importer addCalendar];
+//    NSLog(@"Importing Calendar...");
+//    [importer addCalendar];
     
     
     NSLog(@"Importing Routes...");
@@ -57,17 +57,17 @@ int main (int argc, const char * argv[])
     [importer reindex];
      
     //For convinience. This will add and extra column routes which will contain comma seperated route numbers passing through this stop
-    NSLog(@"Adding routes to stops...");
-    [importer addStopRoutes];
+//    NSLog(@"Adding routes to stops...");
+//    [importer addStopRoutes];
     
-    NSLog(@"Interpolating stop times");
-    [importer addInterpolatedStopTime];
+//    NSLog(@"Interpolating stop times");
+//    [importer addInterpolatedStopTime];
     
-    NSLog(@"Vacumming...");
-    [importer vacuum];
-    
-    NSLog(@"Reindexing...");
-    [importer reindex];
+//    NSLog(@"Vacumming...");
+//    [importer vacuum];
+//    
+//    NSLog(@"Reindexing...");
+//    [importer reindex];
     
     NSLog(@"Import complete!");
     

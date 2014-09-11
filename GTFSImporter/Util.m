@@ -17,7 +17,7 @@
  */
 + (NSString *) getTransitFilesBasepath
 {
-    return @"/Users/jlopes/Downloads/MBTA_GTFS";
+    return @"/Users/jlopes/Desktop/MBTA_GTFS_FALL_2014";
 }
 
 /*
@@ -25,7 +25,7 @@
  */
 + (NSString *) getTransformationsFilePath
 {
-    return @"/Users/jlopes/Downloads/MBTA_GTFS/db/transformations.txt";
+    return @"/Users/jlopes/Desktop/MBTA_GTFS_FALL_2014/db/transformations.txt";
 }
 
 /*
@@ -33,7 +33,7 @@
  */
 + (NSString *) getDatabasePath
 {
-    return @"/Users/jlopes/Downloads/MBTA_GTFS/mbta.db";
+    return @"/Users/jlopes/Desktop/MBTA_GTFS_FALL_2014/mbta.db";
 }
 
 /*Compute approximate distance between two points in meters. Assumes the
