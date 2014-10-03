@@ -16,6 +16,7 @@
 @property (nonatomic, strong) NSString * stopId;
 @property (nonatomic, strong) NSString * stopName;
 @property (nonatomic, strong) NSString * stopDesc;
+@property (nonatomic, strong) NSString * parentStation;
 @property (nonatomic, strong) NSNumber * locationType;
 @property (nonatomic, strong) NSString * zoneId;
 @property (nonatomic, strong) NSArray  * routes;

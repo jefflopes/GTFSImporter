@@ -42,14 +42,15 @@
         }
     }
     
-    [db executeUpdate:@"INSERT into stops(stop_lat,zone_id,stop_lon,stop_id,stop_desc,stop_name,location_type) values(?, ?, ?, ?, ?, ?, ?)",
+    [db executeUpdate:@"INSERT into stops(stop_lat,zone_id,stop_lon,stop_id,stop_desc,stop_name,location_type,parent_station) values(?, ?, ?, ?, ?, ?, ?, ?)",
      stop.stopLat,
      stop.zoneId,
      stop.stopLon,
      stop.stopId,
      stop.stopDesc,
      stop.stopName,
-     stop.locationType];
+     stop.locationType,
+     stop.parentStation];
     
     if ([db hadError]) {
         NSLog(@"Err %d: %@", [db lastErrorCode], [db lastErrorMessage]);
@@ -78,7 +79,7 @@
     }
     
     //Create table
-    NSString *create = @"CREATE TABLE 'stops' ('stop_lat' decimal(8,6) DEFAULT NULL, 'zone_id' varchar(11) DEFAULT NULL, 'stop_lon' decimal(9,6) DEFAULT NULL, 'stop_id' varchar(11) NOT NULL, 'stop_desc' varchar(255) DEFAULT NULL, 'stop_name' varchar(255) DEFAULT NULL, 'location_type' int(2) DEFAULT NULL, 'routes' varchar(255) DEFAULT NULL, PRIMARY KEY ('stop_id'))";
+    NSString *create = @"CREATE TABLE 'stops' ('stop_lat' decimal(8,6) DEFAULT NULL, 'zone_id' varchar(11) DEFAULT NULL, 'stop_lon' decimal(9,6) DEFAULT NULL, 'stop_id' varchar(11) NOT NULL, 'stop_desc' varchar(255) DEFAULT NULL, 'stop_name' varchar(255) DEFAULT NULL, 'location_type' int(2) DEFAULT NULL, 'parent_station' varchar(255) DEFAULT NULL, 'routes' varchar(255) DEFAULT NULL, PRIMARY KEY ('stop_id'))";
     
     NSString *createIndex = @"CREATE INDEX stop_lat_lon_stops ON stops(stop_lat, stop_lon)";
     
@@ -101,6 +102,7 @@
     stopRecord.stopDesc = aRecord[@"stop_desc"];
     stopRecord.zoneId = aRecord[@"zone_id"];
     stopRecord.locationType = aRecord[@"location_type"];
+    stopRecord.parentStation = aRecord[@"parent_station"];
     
     [self addStop:stopRecord];
 }
